@@ -1,0 +1,110 @@
+[tool.poetry]
+name = "mm-fusion-analysis"
+version = "0.1.0"
+description = "多模态语义融合分析"
+authors = ["clay.com"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.11"
+# FastAPI 核心
+fastapi = "^0.109.0"
+uvicorn = {extras = ["standard"], version = "^0.27.0"}
+gunicorn = "^21.2.0"
+
+# 数据库
+sqlalchemy = "^2.0.25"
+asyncpg = "^0.29.0"
+alembic = "^1.13.1"
+
+# Redis
+redis = "^5.0.1"
+
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+python-multipart = "^0.0.6"
+
+
+# 配置管理
+pydantic = "^2.5.3"
+pydantic-settings = "^2.1.0"
+
+# 日志
+loguru = "^0.7.2"
+
+# MinIO
+minio = "^7.2.3"
+
+# 工具库
+pandas = "^2.1.4"
+openpyxl = "^3.1.2"
+pillow = "^10.2.0"
+fastapi-pagination = "^0.15.0"
+
+# 定时任务
+apscheduler = "^3.10.4"
+celery = "^5.3.0"
+
+[tool.poetry.group.dev.dependencies]
+# 测试
+pytest = "^7.4.3"
+pytest-asyncio = "^0.21.1"
+pytest-cov = "^4.1.0"
+httpx = "^0.25.2"
+
+# 代码质量
+black = "^23.12.0"
+ruff = "^0.1.8"
+mypy = "^1.7.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+target-version = ['py311']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.venv
+  | build
+  | dist
+  | migrations
+)/
+'''
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "C",  # flake8-comprehensions
+    "B",  # flake8-bugbear
+]
+ignore = [
+    "E501",  # line too long
+    "B008",  # do not perform function calls in argument defaults
+    "C901",  # too complex
+]
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+disallow_untyped_defs = false
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --cov=src --cov-report=term-missing"
+asyncio_mode = "auto"
