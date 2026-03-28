@@ -4,12 +4,12 @@ from typing import Any
 
 from fastapi import HTTPException, status
 from jose import JWTError, jwt
-from passlib.context import CryptContext
+from pwdlib import PasswordHash
 
 from src.core.config import settings
 
 # 创建密码上下文
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = PasswordHash.recommended()
 
 
 # ========== JWT Token ==========
