@@ -105,6 +105,17 @@ class Settings(BaseSettings):
     ADMIN_PASSWORD: str = ""
     ADMIN_NICKNAME: str = ""
 
+    # ========== Celery 配置 ==========
+    @property
+    def CELERY_BROKER_URL(self) -> str:
+        """Celery Broker URL"""
+        return self.REDIS_URL
+
+    @property
+    def CELERY_RESULT_BACKEND(self) -> str:
+        """Celery Result Backend URL"""
+        return self.REDIS_URL
+
     class Config:
         env_file = ENV_FILE
         env_file_encoding = "utf-8"
