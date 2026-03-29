@@ -87,6 +87,14 @@ class UserService:
             pages=pages,
         )
 
+    async def update_role(self, user_id: int, role: str) -> bool:
+        obj = await user_repo.get(self.db, user_id)
+        if not obj:
+            return False
+        admin = 1 if role == "admin" else 0
+        await user_repo.update(self.db, user_id, {"admin": admin})
+        return True
+
     async def update_status(self, user_id: int, status: int) -> bool:
         if status not in (0, 1):
             return False

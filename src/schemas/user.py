@@ -94,3 +94,8 @@ class UserListItem(BaseModel):
 class UpdateUserStatusRequest(BaseModel):
     userId: int
     status: Literal[0, 1]  # 0=正常 1=封禁
+
+
+class UpdateUserRoleRequest(BaseModel):
+    userId: int
+    role: Literal["admin", "user"]

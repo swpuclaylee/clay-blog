@@ -17,6 +17,7 @@ from src.schemas.user import (
     LoginRequest,
     RegisterRequest,
     UpdateUserRequest,
+    UpdateUserRoleRequest,
     UpdateUserStatusRequest,
     UserInfo,
     UserListItem,
@@ -124,6 +125,19 @@ async def get_user_page(
     service = UserService(db)
     result = await service.get_page(page, size, keyword)
     return ResponseModel(data=result)
+
+
+@router.put("/role", response_model=ResponseModel[None], summary="修改用户角色（管理员）")
+async def update_role(
+    body: UpdateUserRoleRequest,
+    _: User = Depends(require_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    service = UserService(db)
+    ok = await service.update_role(body.userId, body.role)
+    if not ok:
+        return ResponseModel(code=0, message="用户不存在")
+    return ResponseModel(message="操作成功")
 
 
 @router.put("/status", response_model=ResponseModel[None], summary="更新用户状态（管理员）")
