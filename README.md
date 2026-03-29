@@ -10,6 +10,8 @@ beat（单独一个容器，只负责调度）
 
 ## celery 
 
-1. 启动 Celery Worker：`celery -A src.core.celery_app.celery_app worker -P eventlet -l info`
-   * **`-A celery_task.celery`**：指向你的 Celery 实例所在的文件。`celery_task` 是目录，`celery` 是文件名（不需要加 `.py` 扩展名）。
-2. 启动 Celery Beat：`celery -A src.core.celery_app.celery_app beat -l info`
+worker:
+* celery -A src.core.celery_app.celery_app worker -l info -P solo -Q celery,email,default
+
+beat (单独一个终端)
+* celery -A src.core.celery_app.celery_app beat -l info

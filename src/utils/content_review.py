@@ -36,7 +36,10 @@ async def text_review(text: str) -> bool:
     if not token:
         logger.warning("百度内容审核 token 未初始化，跳过文本审核")
         return True
-
+    data = {
+        'text': text,
+        'strategyId': 1
+    }
     try:
         async with httpx.AsyncClient(timeout=5) as client:
             resp = await client.post(
@@ -46,10 +49,13 @@ async def text_review(text: str) -> bool:
                     "Content-Type": "application/json",
                     "Accept": "application/json",
                 },
-                json={"text": text},
+                data=data,
             )
             result = resp.json()
-            conclusion = result.get("conclusion", "合规")
+            if "error_code" in result:
+                logger.error(f"文本审核请求失败: {result.get('error_msg')}")
+                return False
+            conclusion = result.get("conclusion")
             if conclusion != "合规":
                 logger.warning(f"文本审核不合规: conclusion={conclusion}, text={text[:50]}")
                 return False
