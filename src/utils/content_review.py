@@ -42,7 +42,10 @@ async def text_review(text: str) -> bool:
             resp = await client.post(
                 _TEXT_REVIEW_URL,
                 params={"access_token": token},
-                headers={"Content-Type": "application/json", "Accept": "application/json"},
+                headers={
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                },
                 json={"text": text},
             )
             result = resp.json()

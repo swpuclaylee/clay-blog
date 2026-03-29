@@ -132,9 +132,7 @@ class CommentService:
     async def get_admin_reply_page(
         self, page: int, size: int, keyword: str | None
     ) -> PageResult[AdminReplyItem]:
-        replies, total = await reply_repo.get_admin_page(
-            self.db, page, size, keyword
-        )
+        replies, total = await reply_repo.get_admin_page(self.db, page, size, keyword)
         pages = (total + size - 1) // size
         items = []
         for r in replies:

@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, timezone
+from datetime import timedelta
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -22,8 +22,8 @@ from src.schemas.user import (
     UserInfo,
     UserListItem,
 )
-from src.utils.email import send_email_code, verify_email_code
 from src.services.user import UserService
+from src.utils.email import send_email_code, verify_email_code
 
 router = APIRouter(prefix="/user", tags=["用户"])
 

@@ -1,6 +1,6 @@
 """百度智能云内容审核 token 刷新任务"""
-import requests
 import redis as sync_redis
+import requests
 from loguru import logger
 
 from src.core.celery_app import celery_app
