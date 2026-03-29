@@ -4,8 +4,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.api.deps import get_current_user, get_db, require_admin
 from src.models.user import User
 from src.schemas.base import ResponseModel
-from src.schemas.comment import CommentCreate, ReplyCreate
+from src.schemas.comment import AdminReplyItem, CommentCreate, ReplyCreate
+from src.schemas.common import PageResult
 from src.services.comment import CommentService
+from src.utils.content_review import text_review
 
 router = APIRouter(prefix="/comment", tags=["评论"])
 
@@ -27,6 +29,8 @@ async def create_comment(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
+    if not await text_review(body.content):
+        return ResponseModel(code=0, message="评论内容包含违规信息")
     service = CommentService(db)
     await service.create(body.articleId, current_user.id, body.content)
     return ResponseModel(message="评论成功")
@@ -38,6 +42,8 @@ async def create_reply(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
+    if not await text_review(body.content):
+        return ResponseModel(code=0, message="回复内容包含违规信息")
     service = CommentService(db)
     await service.create_reply(body.commentId, current_user.id, body.content)
     return ResponseModel(message="回复成功")
@@ -56,6 +62,22 @@ async def delete_reply(
     if not ok:
         return ResponseModel(code=0, message="无权限或回复不存在")
     return ResponseModel(message="删除成功")
+
+
+@router.get(
+    "/reply/admin/page",
+    response_model=ResponseModel[PageResult[AdminReplyItem]],
+    summary="后台：分页查询所有回复（管理员）",
+)
+async def get_admin_reply_page(
+    page: int = 1,
+    size: int = 20,
+    keyword: str | None = None,
+    _: User = Depends(require_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    service = CommentService(db)
+    return ResponseModel(data=await service.get_admin_reply_page(page, size, keyword))
 
 
 @router.get("/admin/page", summary="后台：分页查询评论（管理员）")

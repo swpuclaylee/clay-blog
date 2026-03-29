@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core.security import get_password_hash, verify_password
@@ -85,6 +87,11 @@ class UserService:
             page=page,
             size=size,
             pages=pages,
+        )
+
+    async def update_last_login(self, user_id: int) -> None:
+        await user_repo.update(
+            self.db, user_id, {"last_login_at": datetime.now(timezone.utc)}
         )
 
     async def update_role(self, user_id: int, role: str) -> bool:

@@ -3,7 +3,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.repositories.article import article_repo
 from src.repositories.comment import comment_repo, reply_repo
 from src.repositories.user import user_repo
-from src.schemas.comment import AdminCommentItem, CommentItem, ReplyItem, UserBrief
+from src.schemas.comment import (
+    AdminCommentItem,
+    AdminReplyComment,
+    AdminReplyCommentArticle,
+    AdminReplyItem,
+    CommentItem,
+    ReplyItem,
+    UserBrief,
+)
 from src.schemas.common import PageResult
 
 
@@ -117,6 +125,44 @@ class CommentService:
                     createTime=c.comment_time.strftime("%Y-%m-%dT%H:%M:%S"),
                     user=user,
                     article={"title": article.title if article else ""},
+                )
+            )
+        return PageResult(items=items, total=total, page=page, size=size, pages=pages)
+
+    async def get_admin_reply_page(
+        self, page: int, size: int, keyword: str | None
+    ) -> PageResult[AdminReplyItem]:
+        replies, total = await reply_repo.get_admin_page(
+            self.db, page, size, keyword
+        )
+        pages = (total + size - 1) // size
+        items = []
+        for r in replies:
+            user = await _user_brief(self.db, r.from_user_id)
+            comment = await comment_repo.get(self.db, r.comment_id)
+            if comment:
+                article = await article_repo.get(self.db, comment.article_id)
+                reply_comment = AdminReplyComment(
+                    id=comment.id,
+                    content=comment.content,
+                    article=AdminReplyCommentArticle(
+                        id=article.id if article else 0,
+                        title=article.title if article else "",
+                    ),
+                )
+            else:
+                reply_comment = AdminReplyComment(
+                    id=0,
+                    content="",
+                    article=AdminReplyCommentArticle(id=0, title=""),
+                )
+            items.append(
+                AdminReplyItem(
+                    id=r.id,
+                    content=r.content,
+                    createTime=r.reply_time.strftime("%Y-%m-%dT%H:%M:%S"),
+                    user=user,
+                    comment=reply_comment,
                 )
             )
         return PageResult(items=items, total=total, page=page, size=size, pages=pages)

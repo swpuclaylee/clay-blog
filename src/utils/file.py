@@ -4,22 +4,12 @@ from fastapi import HTTPException, UploadFile, status
 
 from src.utils.minio_client import minio_client
 
-# 允许的图片类型
 _ALLOWED_TYPES = {"image/jpeg", "image/png", "image/gif", "image/webp"}
-# 最大 10MB
 _MAX_SIZE = 10 * 1024 * 1024
 
 
 async def upload_image(file: UploadFile) -> str:
-    """
-    上传图片到 MinIO，返回可直接访问的预签名 URL（7天有效）
-
-    Args:
-        file: FastAPI UploadFile
-
-    Returns:
-        预签名 URL 字符串
-    """
+    """上传图片到 MinIO，返回可直接访问的预签名 URL（7天有效）"""
     if file.content_type not in _ALLOWED_TYPES:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -33,7 +23,15 @@ async def upload_image(file: UploadFile) -> str:
             detail="图片大小不能超过 10MB",
         )
 
-    # 按日期组织目录：images/2024/01/filename_timestamp.ext
+    # 图片内容审核
+    from src.utils.content_review import image_review
+
+    if not await image_review(content):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="图片内容违规，上传已拒绝",
+        )
+
     now = datetime.now()
     folder = f"images/{now.year}/{now.month:02d}"
 
@@ -50,7 +48,6 @@ async def upload_image(file: UploadFile) -> str:
             detail=f"文件上传失败：{result.get('error', '未知错误')}",
         )
 
-    # 生成图片预签名 URL（内联显示，不强制下载）
     url = minio_client.get_presigned_url(
         object_name=result["object_name"],
         expires=7,

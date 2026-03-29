@@ -38,3 +38,22 @@ class AdminCommentItem(BaseModel):
     createTime: str
     user: UserBrief
     article: dict  # {"title": "..."}
+
+
+class AdminReplyCommentArticle(BaseModel):
+    id: int
+    title: str
+
+
+class AdminReplyComment(BaseModel):
+    id: int
+    content: str
+    article: AdminReplyCommentArticle
+
+
+class AdminReplyItem(BaseModel):
+    id: int
+    content: str
+    createTime: str
+    user: UserBrief
+    comment: AdminReplyComment

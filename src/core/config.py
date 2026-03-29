@@ -105,6 +105,10 @@ class Settings(BaseSettings):
     ADMIN_PASSWORD: str = ""
     ADMIN_NICKNAME: str = ""
 
+    # 百度智能云内容审核
+    BDY_API_KEY: str = ""
+    BDY_SECRET_KEY: str = ""
+
     # ========== Celery 配置 ==========
     @property
     def CELERY_BROKER_URL(self) -> str:

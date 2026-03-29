@@ -17,7 +17,6 @@ async def send_email_code(email: str) -> None:
     ttl = settings.EMAIL_CODE_EXPIRE_MINUTES * 60
     await redis_cache.set(f"{_EMAIL_CODE_PREFIX}{email}", code, ex=ttl)
 
-    # 通过 Celery 异步发送，不阻塞 HTTP 请求
     from src.tasks.email import send_email_code as celery_send
 
     celery_send.delay(email, code)

@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, File, UploadFile
 from src.api.deps import get_current_user
 from src.models.user import User
 from src.schemas.base import ResponseModel
-from src.services.file import upload_image
+from src.utils.file import upload_image
 
 router = APIRouter(prefix="/file", tags=["文件上传"])
 

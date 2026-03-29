@@ -69,6 +69,24 @@ class ReplyRepository(BaseRepository[Reply]):
     def __init__(self):
         super().__init__(Reply)
 
+    async def get_admin_page(
+        self, db: AsyncSession, page: int, size: int, keyword: str | None = None
+    ) -> tuple[list[Reply], int]:
+        query = select(Reply).where(Reply.deleted == 0)
+        count_q = select(func.count()).select_from(Reply).where(Reply.deleted == 0)
+        if keyword:
+            like = f"%{keyword}%"
+            query = query.where(Reply.content.ilike(like))
+            count_q = count_q.where(Reply.content.ilike(like))
+        query = query.order_by(Reply.reply_time.desc())
+        total = (await db.execute(count_q)).scalar() or 0
+        items = (
+            (await db.execute(query.offset((page - 1) * size).limit(size)))
+            .scalars()
+            .all()
+        )
+        return list(items), total
+
 
 comment_repo = CommentRepository()
 reply_repo = ReplyRepository()

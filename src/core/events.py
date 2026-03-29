@@ -24,6 +24,15 @@ async def lifespan(app: FastAPI):
     await init_redis()
     logger.info("Redis 已初始化")
 
+    # 3. 初始化百度内容审核 token
+    from src.core.config import settings
+
+    if settings.BDY_API_KEY:
+        from src.tasks.review import refresh_bdy_token
+
+        refresh_bdy_token.delay()
+        logger.info("百度内容审核 token 初始化任务已派发")
+
     logger.info("应用启动完成")
 
     yield

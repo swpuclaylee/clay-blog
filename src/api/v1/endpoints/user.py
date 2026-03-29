@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -22,7 +22,7 @@ from src.schemas.user import (
     UserInfo,
     UserListItem,
 )
-from src.services.email import send_email_code, verify_email_code
+from src.utils.email import send_email_code, verify_email_code
 from src.services.user import UserService
 
 router = APIRouter(prefix="/user", tags=["用户"])
@@ -56,7 +56,8 @@ async def login(body: LoginRequest, db: AsyncSession = Depends(get_db)):
     if not user:
         return ResponseModel(code=0, message="邮箱或密码错误")
     if not user.is_active:
-        return ResponseModel(code=0, message="账号已被禁用")
+        return ResponseModel(code=0, message="账号已被封禁")
+    await UserService(db).update_last_login(user.id)
     token = create_access_token(
         subject=user.id,
         expires_delta=timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES),

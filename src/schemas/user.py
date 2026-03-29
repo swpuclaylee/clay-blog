@@ -73,10 +73,15 @@ class UserListItem(BaseModel):
     role: str
     status: int
     createTime: datetime
+    lastLoginAt: datetime | None
 
     @field_serializer("createTime")
-    def serialize_dt(self, dt: datetime, _info) -> str:
+    def serialize_create_time(self, dt: datetime, _info) -> str:
         return dt.strftime("%Y-%m-%dT%H:%M:%S")
+
+    @field_serializer("lastLoginAt")
+    def serialize_last_login(self, dt: datetime | None, _info) -> str | None:
+        return dt.strftime("%Y-%m-%dT%H:%M:%S") if dt else None
 
     @classmethod
     def from_orm(cls, user) -> "UserListItem":
@@ -88,6 +93,7 @@ class UserListItem(BaseModel):
             role=user.role,
             status=user.status,
             createTime=user.created_at,
+            lastLoginAt=user.last_login_at,
         )
 
 

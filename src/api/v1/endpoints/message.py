@@ -6,6 +6,7 @@ from src.models.user import User
 from src.schemas.base import ResponseModel
 from src.schemas.message import MessageCreate, MessageReply
 from src.services.message import MessageService
+from src.utils.content_review import text_review
 
 router = APIRouter(prefix="/message", tags=["留言"])
 
@@ -26,6 +27,8 @@ async def create_message(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
+    if not await text_review(body.content):
+        return ResponseModel(code=0, message="留言内容包含违规信息")
     service = MessageService(db)
     await service.create(current_user.id, body.content)
     return ResponseModel(message="留言成功")

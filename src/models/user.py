@@ -1,4 +1,6 @@
-from sqlalchemy import SmallInteger, String
+from datetime import datetime
+
+from sqlalchemy import DateTime, SmallInteger, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from src.models.base import Base
@@ -29,6 +31,9 @@ class User(TimestampMixin, Base):
     # status: 0=正常 1=封禁
     status: Mapped[int] = mapped_column(
         SmallInteger, nullable=False, default=0, comment="状态"
+    )
+    last_login_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True, comment="最后登录时间"
     )
     # admin: 1=管理员 0=普通用户
     admin: Mapped[int] = mapped_column(

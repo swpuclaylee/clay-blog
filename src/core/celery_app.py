@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from celery import Celery
 from celery.signals import worker_process_init
 
@@ -34,6 +36,13 @@ celery_app.conf.update(
     # 任务限流， 限制任务执行频率（防止 API 限流、资源耗尽）
     task_annotations={
         "src.tasks.email.send_email": {"rate_limit": "100/m"},  # 每分钟最多100个
+    },
+    # Celery Beat 定时任务
+    beat_schedule={
+        "refresh-bdy-review-token": {
+            "task": "src.tasks.review.refresh_bdy_token",
+            "schedule": timedelta(days=20),
+        },
     },
 )
 
