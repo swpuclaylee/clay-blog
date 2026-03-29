@@ -10,7 +10,7 @@ from src.services.message import MessageService
 router = APIRouter(prefix="/message", tags=["留言"])
 
 
-@router.get("/page")
+@router.get("/page", summary="获取留言列表（分页，含回复）")
 async def get_page(
     page: int = 1,
     size: int = 10,
@@ -20,7 +20,7 @@ async def get_page(
     return ResponseModel(data=await service.get_page(page, size))
 
 
-@router.post("", response_model=ResponseModel[None])
+@router.post("", response_model=ResponseModel[None], summary="发表留言")
 async def create_message(
     body: MessageCreate,
     current_user: User = Depends(get_current_user),
@@ -31,7 +31,7 @@ async def create_message(
     return ResponseModel(message="留言成功")
 
 
-@router.post("/reply", response_model=ResponseModel[None])
+@router.post("/reply", response_model=ResponseModel[None], summary="回复留言（管理员）")
 async def reply_message(
     body: MessageReply,
     admin: User = Depends(require_admin),
@@ -44,7 +44,7 @@ async def reply_message(
     return ResponseModel(message="回复成功")
 
 
-@router.delete("/{message_id}", response_model=ResponseModel[None])
+@router.delete("/{message_id}", response_model=ResponseModel[None], summary="删除留言（管理员）")
 async def delete_message(
     message_id: int,
     _: User = Depends(require_admin),

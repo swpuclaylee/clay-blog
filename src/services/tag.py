@@ -35,10 +35,10 @@ class TagService:
 
     async def update(self, tag_id: int, name: str) -> bool:
         obj = await tag_repo.get(self.db, tag_id)
-        if not obj or obj.deleted == 1:
+        if not obj:
             return False
         await tag_repo.update(self.db, tag_id, {"name": name})
         return True
 
     async def delete(self, tag_id: int) -> bool:
-        return await tag_repo.soft_delete(self.db, tag_id)
+        return await tag_repo.hard_delete(self.db, tag_id)

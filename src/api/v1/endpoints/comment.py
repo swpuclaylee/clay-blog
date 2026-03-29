@@ -10,7 +10,7 @@ from src.services.comment import CommentService
 router = APIRouter(prefix="/comment", tags=["评论"])
 
 
-@router.get("/page")
+@router.get("/page", summary="前台：分页获取文章评论")
 async def get_page(
     articleId: int,
     page: int = 1,
@@ -21,7 +21,7 @@ async def get_page(
     return ResponseModel(data=await service.get_page(articleId, page, size))
 
 
-@router.post("", response_model=ResponseModel[None])
+@router.post("", response_model=ResponseModel[None], summary="发表评论")
 async def create_comment(
     body: CommentCreate,
     current_user: User = Depends(get_current_user),
@@ -32,7 +32,7 @@ async def create_comment(
     return ResponseModel(message="评论成功")
 
 
-@router.post("/reply", response_model=ResponseModel[None])
+@router.post("/reply", response_model=ResponseModel[None], summary="回复评论")
 async def create_reply(
     body: ReplyCreate,
     current_user: User = Depends(get_current_user),
@@ -43,7 +43,7 @@ async def create_reply(
     return ResponseModel(message="回复成功")
 
 
-@router.delete("/reply/{reply_id}", response_model=ResponseModel[None])
+@router.delete("/reply/{reply_id}", response_model=ResponseModel[None], summary="删除回复（本人或管理员）")
 async def delete_reply(
     reply_id: int,
     current_user: User = Depends(get_current_user),
@@ -56,7 +56,7 @@ async def delete_reply(
     return ResponseModel(message="删除成功")
 
 
-@router.get("/admin/page")
+@router.get("/admin/page", summary="后台：分页查询评论（管理员）")
 async def get_admin_page(
     page: int = 1,
     size: int = 20,
@@ -68,7 +68,7 @@ async def get_admin_page(
     return ResponseModel(data=await service.get_admin_page(page, size, keyword))
 
 
-@router.delete("/{comment_id}", response_model=ResponseModel[None])
+@router.delete("/{comment_id}", response_model=ResponseModel[None], summary="删除评论（本人或管理员）")
 async def delete_comment(
     comment_id: int,
     current_user: User = Depends(get_current_user),

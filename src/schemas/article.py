@@ -93,13 +93,10 @@ class ArticleIdResponse(BaseModel):
     id: int
 
 
-class RecommendCreate(BaseModel):
-    articleId: int
-
-
 class RecommendItem(BaseModel):
-    id: int
+    id: str
     title: str
+    score: float
 
 
 class ArticleRelatedItem(BaseModel):

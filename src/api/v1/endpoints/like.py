@@ -14,7 +14,7 @@ class LikeRequest(BaseModel):
     articleId: int
 
 
-@router.get("/check/{article_id}")
+@router.get("/check/{article_id}", summary="检查是否已点赞")
 async def check_like(
     article_id: int,
     current_user: User = Depends(get_current_user),
@@ -25,7 +25,7 @@ async def check_like(
     return ResponseModel(data=liked)
 
 
-@router.post("", response_model=ResponseModel[None])
+@router.post("", response_model=ResponseModel[None], summary="点赞文章")
 async def like_article(
     body: LikeRequest,
     current_user: User = Depends(get_current_user),
@@ -36,7 +36,7 @@ async def like_article(
     return ResponseModel(message="点赞成功")
 
 
-@router.delete("/{article_id}", response_model=ResponseModel[None])
+@router.delete("/{article_id}", response_model=ResponseModel[None], summary="取消点赞")
 async def unlike_article(
     article_id: int,
     current_user: User = Depends(get_current_user),

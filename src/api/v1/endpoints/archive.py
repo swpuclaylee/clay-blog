@@ -8,9 +8,8 @@ from src.services.article import ArticleService
 router = APIRouter(prefix="/archive", tags=["归档"])
 
 
-@router.get("/list")
+@router.get("/list", summary="获取文章归档列表（全量，按发布时间降序）")
 async def get_archive_list(db: AsyncSession = Depends(get_db)):
-    """获取归档列表（全量，按 createTime 降序）"""
     service = ArticleService(db)
     data = await service.get_archive_list()
     return ResponseModel(data=data)

@@ -88,6 +88,8 @@ class UserService:
         )
 
     async def update_status(self, user_id: int, status: int) -> bool:
+        if status not in (0, 1):
+            return False
         obj = await user_repo.get(self.db, user_id)
         if not obj:
             return False

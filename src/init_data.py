@@ -83,12 +83,8 @@ def _guess_content_type(suffix: str) -> str:
     return mapping.get(suffix.lower(), "application/octet-stream")
 
 
-def _default_avatar_path(gender: int | None = None) -> str:
-    """根据性别返回默认头像 MinIO 路径"""
-    if gender == 1:
-        return f"{AVATAR_PREFIX}/default_male.png"
-    elif gender == 0:
-        return f"{AVATAR_PREFIX}/default_female.png"
+def _default_avatar_path() -> str:
+    """返回默认头像 MinIO 路径"""
     return f"{AVATAR_PREFIX}/default.png"
 
 

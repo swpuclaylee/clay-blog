@@ -60,4 +60,4 @@ class MessageService:
         return True
 
     async def delete(self, message_id: int) -> bool:
-        return await message_repo.soft_delete(self.db, message_id)
+        return await message_repo.hard_delete(self.db, message_id)

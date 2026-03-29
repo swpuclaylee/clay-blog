@@ -10,13 +10,13 @@ from src.services.friend_link import FriendLinkService
 router = APIRouter(prefix="/friend-link", tags=["友链"])
 
 
-@router.get("/list")
+@router.get("/list", summary="获取全部友链（前台）")
 async def get_list(db: AsyncSession = Depends(get_db)):
     service = FriendLinkService(db)
     return ResponseModel(data=await service.get_list())
 
 
-@router.get("/page")
+@router.get("/page", summary="分页查询友链（管理员）")
 async def get_page(
     page: int = 1,
     size: int = 20,
@@ -27,7 +27,7 @@ async def get_page(
     return ResponseModel(data=await service.get_page(page, size))
 
 
-@router.post("", response_model=ResponseModel[None])
+@router.post("", response_model=ResponseModel[None], summary="新增友链（管理员）")
 async def create(
     body: FriendLinkCreate,
     _: User = Depends(require_admin),
@@ -38,7 +38,7 @@ async def create(
     return ResponseModel(message="操作成功")
 
 
-@router.put("/{link_id}", response_model=ResponseModel[None])
+@router.put("/{link_id}", response_model=ResponseModel[None], summary="更新友链（管理员）")
 async def update(
     link_id: int,
     body: FriendLinkUpdate,
@@ -52,7 +52,7 @@ async def update(
     return ResponseModel(message="操作成功")
 
 
-@router.delete("/{link_id}", response_model=ResponseModel[None])
+@router.delete("/{link_id}", response_model=ResponseModel[None], summary="删除友链（管理员）")
 async def delete(
     link_id: int,
     _: User = Depends(require_admin),

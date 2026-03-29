@@ -10,7 +10,7 @@ from src.services.client import ClientService
 router = APIRouter(prefix="/client", tags=["客户端"])
 
 
-@router.get("/page")
+@router.get("/page", summary="分页查询客户端（管理员）")
 async def get_page(
     page: int = 1,
     size: int = 20,
@@ -21,7 +21,7 @@ async def get_page(
     return ResponseModel(data=await service.get_page(page, size))
 
 
-@router.post("", response_model=ResponseModel[None])
+@router.post("", response_model=ResponseModel[None], summary="新增客户端（管理员）")
 async def create(
     body: ClientCreate,
     _: User = Depends(require_admin),
@@ -32,7 +32,7 @@ async def create(
     return ResponseModel(message="操作成功")
 
 
-@router.put("/{client_id}", response_model=ResponseModel[None])
+@router.put("/{client_id}", response_model=ResponseModel[None], summary="更新客户端（管理员）")
 async def update(
     client_id: int,
     body: ClientUpdate,
@@ -46,7 +46,7 @@ async def update(
     return ResponseModel(message="操作成功")
 
 
-@router.delete("/{client_id}", response_model=ResponseModel[None])
+@router.delete("/{client_id}", response_model=ResponseModel[None], summary="删除客户端（管理员）")
 async def delete(
     client_id: int,
     _: User = Depends(require_admin),

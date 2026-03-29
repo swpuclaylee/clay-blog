@@ -14,7 +14,7 @@ class CollectRequest(BaseModel):
     articleId: int
 
 
-@router.get("/check/{article_id}")
+@router.get("/check/{article_id}", summary="检查是否已收藏")
 async def check_collect(
     article_id: int,
     current_user: User = Depends(get_current_user),
@@ -24,7 +24,7 @@ async def check_collect(
     return ResponseModel(data=await service.is_collected(current_user.id, article_id))
 
 
-@router.post("", response_model=ResponseModel[None])
+@router.post("", response_model=ResponseModel[None], summary="收藏文章")
 async def collect(
     body: CollectRequest,
     current_user: User = Depends(get_current_user),
@@ -35,7 +35,7 @@ async def collect(
     return ResponseModel(message="收藏成功")
 
 
-@router.delete("/{article_id}", response_model=ResponseModel[None])
+@router.delete("/{article_id}", response_model=ResponseModel[None], summary="取消收藏")
 async def uncollect(
     article_id: int,
     current_user: User = Depends(get_current_user),
@@ -46,7 +46,7 @@ async def uncollect(
     return ResponseModel(message="取消收藏")
 
 
-@router.get("/page")
+@router.get("/page", summary="我的收藏列表（分页）")
 async def get_my_page(
     page: int = 1,
     size: int = 10,
@@ -57,7 +57,7 @@ async def get_my_page(
     return ResponseModel(data=await service.get_page(current_user.id, page, size))
 
 
-@router.get("/admin/page")
+@router.get("/admin/page", summary="后台：收藏列表（管理员）")
 async def get_admin_page(
     page: int = 1,
     size: int = 20,

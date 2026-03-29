@@ -58,14 +58,6 @@ class CommentRepository(BaseRepository[Comment]):
         )
         return list(items), total
 
-    async def soft_delete(self, db: AsyncSession, id: int) -> bool:
-        obj = await self.get(db, id)
-        if not obj:
-            return False
-        obj.deleted = 1
-        await db.commit()
-        return True
-
     async def total_count(self, db: AsyncSession) -> int:
         result = await db.execute(
             select(func.count()).select_from(Comment).where(Comment.deleted == 0)
@@ -76,14 +68,6 @@ class CommentRepository(BaseRepository[Comment]):
 class ReplyRepository(BaseRepository[Reply]):
     def __init__(self):
         super().__init__(Reply)
-
-    async def soft_delete(self, db: AsyncSession, id: int) -> bool:
-        obj = await self.get(db, id)
-        if not obj:
-            return False
-        obj.deleted = 1
-        await db.commit()
-        return True
 
 
 comment_repo = CommentRepository()

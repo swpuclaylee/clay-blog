@@ -14,7 +14,6 @@ from src.schemas.article import (
     ArticleRelatedItem,
     AuthorBrief,
     CategoryBrief,
-    RecommendItem,
     TagBrief,
 )
 from src.schemas.common import PageResult
@@ -81,8 +80,9 @@ class ArticleService:
         a = await article_repo.get(self.db, article_id)
         if not a or a.deleted == 1:
             return None
-        # 增加浏览量
-        await article_repo.update(self.db, article_id, {"view_count": a.view_count + 1})
+        # 增加浏览量，先算好新值保持一致
+        new_view_count = a.view_count + 1
+        await article_repo.update(self.db, article_id, {"view_count": new_view_count})
 
         author_obj = await user_repo.get(self.db, a.user_id)
         author = AuthorBrief(
@@ -97,7 +97,7 @@ class ArticleService:
             summary=a.summary,
             cover=a.cover,
             status=a.status,
-            viewCount=a.view_count + 1,
+            viewCount=new_view_count,
             likeCount=a.like_count,
             collectCount=a.collect_count,
             commentCount=a.comment_count,
@@ -119,10 +119,6 @@ class ArticleService:
             )
             for r in related
         ]
-
-    async def get_recommend_list(self) -> list[RecommendItem]:
-        items = await article_repo.get_recommend_list(self.db)
-        return [RecommendItem(id=a.id, title=a.title) for a in items]
 
     async def get_admin_page(
         self,
@@ -203,7 +199,7 @@ class ArticleService:
         return True
 
     async def delete(self, article_id: int) -> bool:
-        return await article_repo.soft_delete(self.db, article_id)
+        return await article_repo.hard_delete(self.db, article_id)
 
     async def update_status(self, article_id: int, status: int) -> bool:
         obj = await article_repo.get(self.db, article_id)
@@ -213,20 +209,6 @@ class ArticleService:
         if status == 1 and obj.status != 1:
             updates["publish_time"] = datetime.now(timezone.utc)
         await article_repo.update(self.db, article_id, updates)
-        return True
-
-    async def add_recommend(self, article_id: int) -> bool:
-        obj = await article_repo.get(self.db, article_id)
-        if not obj or obj.deleted == 1:
-            return False
-        await article_repo.update(self.db, article_id, {"is_recommend": 1})
-        return True
-
-    async def remove_recommend(self, article_id: int) -> bool:
-        obj = await article_repo.get(self.db, article_id)
-        if not obj:
-            return False
-        await article_repo.update(self.db, article_id, {"is_recommend": 0})
         return True
 
     async def get_archive_list(self) -> list[dict]:

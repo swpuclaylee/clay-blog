@@ -10,13 +10,13 @@ from src.services.tag import TagService
 router = APIRouter(prefix="/tag", tags=["标签"])
 
 
-@router.get("/list")
+@router.get("/list", summary="获取标签列表（含文章数）")
 async def get_list(db: AsyncSession = Depends(get_db)):
     service = TagService(db)
     return ResponseModel(data=await service.get_list())
 
 
-@router.get("/page")
+@router.get("/page", summary="分页查询标签（管理员）")
 async def get_page(
     page: int = 1,
     size: int = 20,
@@ -27,7 +27,7 @@ async def get_page(
     return ResponseModel(data=await service.get_page(page, size))
 
 
-@router.post("", response_model=ResponseModel[None])
+@router.post("", response_model=ResponseModel[None], summary="新增标签（管理员）")
 async def create(
     body: TagCreate,
     _: User = Depends(require_admin),
@@ -40,7 +40,7 @@ async def create(
     return ResponseModel(message="操作成功")
 
 
-@router.put("/{tag_id}", response_model=ResponseModel[None])
+@router.put("/{tag_id}", response_model=ResponseModel[None], summary="更新标签（管理员）")
 async def update(
     tag_id: int,
     body: TagUpdate,
@@ -54,7 +54,7 @@ async def update(
     return ResponseModel(message="操作成功")
 
 
-@router.delete("/{tag_id}", response_model=ResponseModel[None])
+@router.delete("/{tag_id}", response_model=ResponseModel[None], summary="删除标签（管理员）")
 async def delete(
     tag_id: int,
     _: User = Depends(require_admin),

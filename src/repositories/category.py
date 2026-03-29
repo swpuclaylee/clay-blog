@@ -48,13 +48,5 @@ class CategoryRepository(BaseRepository[Category]):
         )
         return result.scalar() or 0
 
-    async def soft_delete(self, db: AsyncSession, id: int) -> bool:
-        obj = await self.get(db, id)
-        if not obj:
-            return False
-        obj.deleted = 1
-        await db.commit()
-        return True
-
 
 category_repo = CategoryRepository()

@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, EmailStr, field_serializer
 
@@ -92,4 +93,4 @@ class UserListItem(BaseModel):
 
 class UpdateUserStatusRequest(BaseModel):
     userId: int
-    status: int
+    status: Literal[0, 1]  # 0=正常 1=封禁

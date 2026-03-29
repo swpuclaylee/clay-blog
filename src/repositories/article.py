@@ -85,15 +85,6 @@ class ArticleRepository(BaseRepository[Article]):
         )
         return list(items), total
 
-    async def get_recommend_list(self, db: AsyncSession) -> list[Article]:
-        result = await db.execute(
-            select(Article)
-            .where(Article.deleted == 0, Article.status == 1, Article.is_recommend == 1)
-            .order_by(Article.create_time.desc())
-            .limit(10)
-        )
-        return list(result.scalars().all())
-
     async def get_related(
         self, db: AsyncSession, article_id: int, category_id: int | None, limit: int = 5
     ) -> list[Article]:
@@ -129,14 +120,6 @@ class ArticleRepository(BaseRepository[Article]):
         for tag_id in tag_ids:
             db.add(ArticleTag(article_id=article_id, tag_id=tag_id))
         await db.commit()
-
-    async def soft_delete(self, db: AsyncSession, id: int) -> bool:
-        obj = await self.get(db, id)
-        if not obj:
-            return False
-        obj.deleted = 1
-        await db.commit()
-        return True
 
     async def total_views(self, db: AsyncSession) -> int:
         result = await db.execute(

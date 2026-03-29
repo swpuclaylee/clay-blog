@@ -89,7 +89,7 @@ class CommentService:
             return False
         if not is_admin and obj.from_user_id != user_id:
             return False
-        return await comment_repo.soft_delete(self.db, comment_id)
+        return await comment_repo.hard_delete(self.db, comment_id)
 
     async def delete_reply(self, reply_id: int, user_id: int, is_admin: bool) -> bool:
         obj = await reply_repo.get(self.db, reply_id)
@@ -97,7 +97,7 @@ class CommentService:
             return False
         if not is_admin and obj.from_user_id != user_id:
             return False
-        return await reply_repo.soft_delete(self.db, reply_id)
+        return await reply_repo.hard_delete(self.db, reply_id)
 
     async def get_admin_page(
         self, page: int, size: int, keyword: str | None

@@ -57,4 +57,4 @@ class CategoryService:
         return True
 
     async def delete(self, category_id: int) -> bool:
-        return await category_repo.soft_delete(self.db, category_id)
+        return await category_repo.hard_delete(self.db, category_id)

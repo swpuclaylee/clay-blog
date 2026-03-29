@@ -17,10 +17,6 @@ class User(TimestampMixin, Base):
         String(128), nullable=False, comment="密码（bcrypt）"
     )
     nickname: Mapped[str] = mapped_column(String(64), nullable=True, comment="昵称")
-    gender: Mapped[int] = mapped_column(SmallInteger, nullable=True, comment="性别：1男 0女")
-    birthday: Mapped[str | None] = mapped_column(
-        String(20), nullable=True, comment="生日"
-    )
     email: Mapped[str | None] = mapped_column(
         String(128), unique=True, nullable=True, comment="邮箱"
     )
@@ -30,7 +26,7 @@ class User(TimestampMixin, Base):
     avatar: Mapped[str | None] = mapped_column(
         String(512), nullable=True, comment="头像路径（MinIO key）"
     )
-    # status: 0=正常 1=锁定 2=禁用 3=过期
+    # status: 0=正常 1=封禁
     status: Mapped[int] = mapped_column(
         SmallInteger, nullable=False, default=0, comment="状态"
     )
