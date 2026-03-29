@@ -97,7 +97,16 @@ class CommentService:
             return False
         if not is_admin and obj.from_user_id != user_id:
             return False
-        return await comment_repo.hard_delete(self.db, comment_id)
+        ok = await comment_repo.hard_delete(self.db, comment_id)
+        if ok:
+            article = await article_repo.get(self.db, obj.article_id)
+            if article and article.comment_count > 0:
+                await article_repo.update(
+                    self.db,
+                    obj.article_id,
+                    {"comment_count": article.comment_count - 1},
+                )
+        return ok
 
     async def delete_reply(self, reply_id: int, user_id: int, is_admin: bool) -> bool:
         obj = await reply_repo.get(self.db, reply_id)
