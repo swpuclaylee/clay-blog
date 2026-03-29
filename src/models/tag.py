@@ -9,4 +9,6 @@ class Tag(Base):
 
     __tablename__ = "tag"
 
-    name: Mapped[str] = mapped_column(String(64), nullable=False, unique=True, comment="标签名")
+    name: Mapped[str] = mapped_column(
+        String(64), nullable=False, unique=True, comment="标签名"
+    )

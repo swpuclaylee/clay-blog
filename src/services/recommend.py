@@ -48,9 +48,11 @@ class RecommendService:
             article = await article_repo.get(self.db, article_id)
             if not article:
                 continue
-            result.append({
-                "id": str(article_id),
-                "title": article.title,
-                "score": score,
-            })
+            result.append(
+                {
+                    "id": str(article_id),
+                    "title": article.title,
+                    "score": score,
+                }
+            )
         return result

@@ -43,7 +43,9 @@ async def create_reply(
     return ResponseModel(message="回复成功")
 
 
-@router.delete("/reply/{reply_id}", response_model=ResponseModel[None], summary="删除回复（本人或管理员）")
+@router.delete(
+    "/reply/{reply_id}", response_model=ResponseModel[None], summary="删除回复（本人或管理员）"
+)
 async def delete_reply(
     reply_id: int,
     current_user: User = Depends(get_current_user),
@@ -68,7 +70,9 @@ async def get_admin_page(
     return ResponseModel(data=await service.get_admin_page(page, size, keyword))
 
 
-@router.delete("/{comment_id}", response_model=ResponseModel[None], summary="删除评论（本人或管理员）")
+@router.delete(
+    "/{comment_id}", response_model=ResponseModel[None], summary="删除评论（本人或管理员）"
+)
 async def delete_comment(
     comment_id: int,
     current_user: User = Depends(get_current_user),

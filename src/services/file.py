@@ -1,8 +1,7 @@
 from datetime import datetime
 
-from fastapi import UploadFile, HTTPException, status
+from fastapi import HTTPException, UploadFile, status
 
-from src.core.config import settings
 from src.utils.minio_client import minio_client
 
 # 允许的图片类型

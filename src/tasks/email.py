@@ -51,4 +51,4 @@ def send_email_code(self, email: str, code: str) -> None:
 
     except Exception as exc:
         logger.error(f"发送验证码邮件失败 ({email}): {exc}")
-        raise self.retry(exc=exc)
+        raise self.retry(exc=exc) from exc

@@ -27,7 +27,9 @@ async def get_published_page(
     db: AsyncSession = Depends(get_db),
 ):
     service = ArticleService(db)
-    result = await service.get_published_page(page, size, sort, categoryId, tagId, keyword)
+    result = await service.get_published_page(
+        page, size, sort, categoryId, tagId, keyword
+    )
     return ResponseModel(data=result)
 
 
@@ -91,7 +93,9 @@ async def get_detail(article_id: int, db: AsyncSession = Depends(get_db)):
     return ResponseModel(data=data)
 
 
-@router.post("", response_model=ResponseModel[ArticleIdResponse], summary="后台：新增文章（管理员）")
+@router.post(
+    "", response_model=ResponseModel[ArticleIdResponse], summary="后台：新增文章（管理员）"
+)
 async def create_article(
     body: ArticleCreate,
     admin: User = Depends(require_admin),
@@ -102,7 +106,9 @@ async def create_article(
     return ResponseModel(data=result)
 
 
-@router.put("/{article_id}/status", response_model=ResponseModel[None], summary="后台：切换文章状态（管理员）")
+@router.put(
+    "/{article_id}/status", response_model=ResponseModel[None], summary="后台：切换文章状态（管理员）"
+)
 async def update_status(
     article_id: int,
     body: ArticleStatusUpdate,
@@ -130,7 +136,9 @@ async def update_article(
     return ResponseModel(message="更新成功")
 
 
-@router.delete("/{article_id}", response_model=ResponseModel[None], summary="后台：删除文章（管理员）")
+@router.delete(
+    "/{article_id}", response_model=ResponseModel[None], summary="后台：删除文章（管理员）"
+)
 async def delete_article(
     article_id: int,
     _: User = Depends(require_admin),

@@ -18,7 +18,9 @@ class TagRepository(BaseRepository[Tag]):
         result = await db.execute(select(Tag).where(Tag.name == name))
         return result.scalar_one_or_none()
 
-    async def get_page(self, db: AsyncSession, page: int, size: int) -> tuple[list[Tag], int]:
+    async def get_page(
+        self, db: AsyncSession, page: int, size: int
+    ) -> tuple[list[Tag], int]:
         total = (await db.execute(select(func.count()).select_from(Tag))).scalar() or 0
         items = (
             (await db.execute(select(Tag).offset((page - 1) * size).limit(size)))
@@ -35,7 +37,9 @@ class TagRepository(BaseRepository[Tag]):
 
     async def article_count(self, db: AsyncSession, tag_id: int) -> int:
         result = await db.execute(
-            select(func.count()).select_from(ArticleTag).where(ArticleTag.tag_id == tag_id)
+            select(func.count())
+            .select_from(ArticleTag)
+            .where(ArticleTag.tag_id == tag_id)
         )
         return result.scalar() or 0
 

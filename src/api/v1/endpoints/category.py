@@ -54,7 +54,9 @@ async def update(
     return ResponseModel(message="操作成功")
 
 
-@router.delete("/{category_id}", response_model=ResponseModel[None], summary="删除分类（管理员）")
+@router.delete(
+    "/{category_id}", response_model=ResponseModel[None], summary="删除分类（管理员）"
+)
 async def delete(
     category_id: int,
     _: User = Depends(require_admin),

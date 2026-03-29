@@ -114,7 +114,11 @@ async def bind_email(
     return ResponseModel(message="绑定成功")
 
 
-@router.get("/page", response_model=ResponseModel[PageResult[UserListItem]], summary="分页查询用户列表（管理员）")
+@router.get(
+    "/page",
+    response_model=ResponseModel[PageResult[UserListItem]],
+    summary="分页查询用户列表（管理员）",
+)
 async def get_user_page(
     page: int = 1,
     size: int = 20,

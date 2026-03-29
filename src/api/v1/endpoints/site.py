@@ -27,15 +27,11 @@ async def get_site_info(db: AsyncSession = Depends(get_db)):
 
     category_count = (
         await db.execute(
-            select(func.count())
-            .select_from(Category)
-            .where(Category.deleted == 0)
+            select(func.count()).select_from(Category).where(Category.deleted == 0)
         )
     ).scalar() or 0
 
-    tag_count = (
-        await db.execute(select(func.count()).select_from(Tag))
-    ).scalar() or 0
+    tag_count = (await db.execute(select(func.count()).select_from(Tag))).scalar() or 0
 
     return ResponseModel(
         data=SiteInfo(

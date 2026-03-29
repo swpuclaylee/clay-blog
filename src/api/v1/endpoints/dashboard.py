@@ -13,17 +13,23 @@ from src.schemas.dashboard import DashboardStats
 router = APIRouter(prefix="/dashboard", tags=["仪表盘"])
 
 
-@router.get("/stats", response_model=ResponseModel[DashboardStats], summary="获取博客统计数据（管理员）")
+@router.get(
+    "/stats", response_model=ResponseModel[DashboardStats], summary="获取博客统计数据（管理员）"
+)
 async def get_stats(
     _: User = Depends(require_admin),
     db: AsyncSession = Depends(get_db),
 ):
     article_count = (
-        await db.execute(select(func.count()).select_from(Article).where(Article.deleted == 0))
+        await db.execute(
+            select(func.count()).select_from(Article).where(Article.deleted == 0)
+        )
     ).scalar() or 0
 
     comment_count = (
-        await db.execute(select(func.count()).select_from(Comment).where(Comment.deleted == 0))
+        await db.execute(
+            select(func.count()).select_from(Comment).where(Comment.deleted == 0)
+        )
     ).scalar() or 0
 
     user_count = (
@@ -32,9 +38,11 @@ async def get_stats(
 
     total_views = await article_repo.total_views(db)
 
-    return ResponseModel(data=DashboardStats(
-        articleCount=article_count,
-        commentCount=comment_count,
-        userCount=user_count,
-        totalViews=total_views,
-    ))
+    return ResponseModel(
+        data=DashboardStats(
+            articleCount=article_count,
+            commentCount=comment_count,
+            userCount=user_count,
+            totalViews=total_views,
+        )
+    )
