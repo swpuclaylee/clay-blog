@@ -97,6 +97,7 @@ services:
       -l info
       -P prefork
       --concurrency=1
+      -Q celery,email
       --logfile=logs/celery.log"
     depends_on:
       - blog-postgresql
