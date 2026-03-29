@@ -17,6 +17,10 @@ class UserRepository(BaseRepository[User]):
         result = await db.execute(select(User).where(User.username == username))
         return result.scalar_one_or_none()
 
+    async def get_admin(self, db: AsyncSession) -> User | None:
+        result = await db.execute(select(User).where(User.username == "admin"))
+        return result.scalar_one_or_none()
+
     async def get_page(
         self, db: AsyncSession, page: int, size: int, keyword: str | None = None
     ) -> tuple[list[User], int]:
