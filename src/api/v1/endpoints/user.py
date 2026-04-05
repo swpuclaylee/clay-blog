@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.api.deps import get_current_user, get_db, require_admin
@@ -24,6 +24,7 @@ from src.schemas.user import (
 )
 from src.services.user import UserService
 from src.utils.email import send_email_code, verify_email_code
+from src.utils.minio_client import minio_client
 
 router = APIRouter(prefix="/user", tags=["用户"])
 
@@ -71,7 +72,20 @@ async def logout(current_user: User = Depends(get_current_user)):
 
 
 @router.get("/info", response_model=ResponseModel[UserInfo], summary="获取当前用户信息")
-async def get_info(current_user: User = Depends(get_current_user)):
+async def get_info(
+        current_user: User = Depends(get_current_user),
+):
+    url = minio_client.get_presigned_url(
+        object_name=current_user.avatar,
+        expires=7,
+        force_download=False,
+    )
+    if not url:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="生成图片访问链接失败",
+        )
+    current_user.avatar = url
     return ResponseModel(data=UserInfo.from_orm(current_user))
 
 

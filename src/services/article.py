@@ -17,6 +17,7 @@ from src.schemas.article import (
     TagBrief,
 )
 from src.schemas.common import PageResult
+from src.utils.minio_client import minio_client
 
 
 async def _build_category(db, category_id: int | None) -> CategoryBrief | None:
@@ -64,7 +65,11 @@ class ArticleService:
                     id=a.id,
                     title=a.title,
                     summary=a.summary,
-                    cover=a.cover,
+                    cover=minio_client.get_presigned_url(
+                        object_name=a.cover,
+                        expires=7,
+                        force_download=False,
+                    ),
                     category=await _build_category(self.db, a.category_id),
                     tags=await _build_tags(self.db, a.id),
                     viewCount=a.view_count,
@@ -115,7 +120,14 @@ class ArticleService:
         related = await article_repo.get_related(self.db, article_id, a.category_id)
         return [
             ArticleRelatedItem(
-                id=r.id, title=r.title, cover=r.cover, createTime=_fmt_dt(r.create_time)
+                id=r.id,
+                title=r.title,
+                cover=minio_client.get_presigned_url(
+                        object_name=r.cover,
+                        expires=7,
+                        force_download=False,
+                    ),
+                createTime=_fmt_dt(r.create_time)
             )
             for r in related
         ]

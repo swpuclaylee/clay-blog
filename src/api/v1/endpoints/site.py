@@ -9,6 +9,7 @@ from src.models.tag import Tag
 from src.repositories.user import user_repo
 from src.schemas.base import ResponseModel
 from src.schemas.site import SiteInfo
+from src.utils.minio_client import minio_client
 
 router = APIRouter(prefix="/site", tags=["站点"])
 
@@ -36,7 +37,11 @@ async def get_site_info(db: AsyncSession = Depends(get_db)):
     return ResponseModel(
         data=SiteInfo(
             ownerName=admin.nickname if admin else None,
-            ownerAvatar=admin.avatar if admin else None,
+            ownerAvatar=minio_client.get_presigned_url(
+                        object_name=admin.avatar,
+                        expires=7,
+                        force_download=False,
+                    ) if admin else None,
             ownerBio=admin.brief if admin else None,
             articleCount=article_count,
             categoryCount=category_count,

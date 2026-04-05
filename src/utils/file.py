@@ -48,16 +48,16 @@ async def upload_image(file: UploadFile) -> str:
             detail=f"文件上传失败：{result.get('error', '未知错误')}",
         )
 
-    url = minio_client.get_presigned_url(
-        object_name=result["object_name"],
-        expires=7,
-        force_download=False,
-    )
+    # url = minio_client.get_presigned_url(
+    #     object_name=result["object_name"],
+    #     expires=7,
+    #     force_download=False,
+    # )
+    #
+    # if not url:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+    #         detail="生成图片访问链接失败",
+    #     )
 
-    if not url:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="生成图片访问链接失败",
-        )
-
-    return url
+    return result["object_name"]
