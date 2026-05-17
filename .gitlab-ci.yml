@@ -52,5 +52,6 @@ deploy:
       BDY_API_KEY=$BDY_API_KEY
       BDY_SECRET_KEY=$BDY_SECRET_KEY
       EOF
-    - docker compose down
-    - docker compose up -d --build
+    - cp .env /opt/blog-data/.env
+    - docker compose --env-file .env down
+    - docker compose --env-file .env up -d --build
