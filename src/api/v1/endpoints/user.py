@@ -80,11 +80,11 @@ async def get_info(
         expires=7,
         force_download=False,
     )
-    if not url:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="生成图片访问链接失败",
-        )
+    # if not url:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+    #         detail="生成图片访问链接失败",
+    #     )
     current_user.avatar = url
     return ResponseModel(data=UserInfo.from_orm(current_user))
 
