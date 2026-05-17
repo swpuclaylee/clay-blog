@@ -1,0 +1,55 @@
+stages:
+  - deploy
+
+deploy:
+  stage: deploy
+  tags:
+    - blog
+  only:
+    - main
+  script:
+    # 生成 .env 文件
+    - |
+      cat > .env <<EOF
+      PROJECT_NAME=blog
+      DEBUG=false
+      ALLOWED_ORIGINS=["*"]
+      API_PREFIX=/api/v1
+      DB_HOST=$DB_HOST
+      DB_PORT=$DB_PORT
+      DB_USER=$DB_USER
+      DB_PASSWORD=$DB_PASSWORD
+      DB_NAME=$DB_NAME
+      DB_ECHO=false
+      DB_POOL_SIZE=20
+      DB_MAX_OVERFLOW=40
+      DB_POOL_RECYCLE=3600
+      DB_POOL_TIMEOUT=30
+      REDIS_HOST=$REDIS_HOST
+      REDIS_PORT=$REDIS_PORT
+      REDIS_DB=1
+      REDIS_PASSWORD=$REDIS_PASSWORD
+      MINIO_ENDPOINT=$MINIO_ENDPOINT
+      MINIO_ACCESS_KEY=$MINIO_ACCESS_KEY
+      MINIO_SECRET_KEY=$MINIO_SECRET_KEY
+      MINIO_SECURE=false
+      MINIO_BUCKET=mmfa-datasets
+      MINIO_USE_HTTPS_URL=false
+      WORKERS=4
+      SECRET_KEY=$SECRET_KEY
+      ALGORITHM=HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES=120
+      REFRESH_TOKEN_EXPIRE_DAYS=7
+      SMTP_HOST=smtp.qq.com
+      SMTP_PORT=465
+      SMTP_USER=$SMTP_USER
+      SMTP_PASSWORD=$SMTP_PASSWORD
+      EMAIL_CODE_EXPIRE_MINUTES=10
+      ADMIN_EMAIL=$ADMIN_EMAIL
+      ADMIN_PASSWORD=$ADMIN_PASSWORD
+      BDY_API_KEY=$BDY_API_KEY
+      BDY_SECRET_KEY=$BDY_SECRET_KEY
+      EOF
+    # 构建并启动
+    - docker compose down
+    - docker compose up -d --build
