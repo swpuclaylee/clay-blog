@@ -7,12 +7,18 @@ WORKDIR /app
 # 设置环境变量
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    TZ=Asia/Shanghai
+    TZ=Asia/Shanghai \
+    http_proxy=http://100.116.102.31:7897 \
+    https_proxy=http://100.116.102.31:7897
 
 # 安装系统依赖
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+
+# 安装完后清掉代理，避免运行时也走代理
+ENV http_proxy="" \
+    https_proxy=""
 
 # 复制依赖文件
 COPY requirements.txt .
