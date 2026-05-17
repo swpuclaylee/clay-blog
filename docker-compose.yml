@@ -12,8 +12,8 @@ services:
     user: "root"
     ports:
       - "20030:8000"
-    volumes:
-      - /opt/blog:/app
+#    volumes:
+#      - /opt/blog:/app
     working_dir: /app
     command: >
       bash -c "alembic upgrade head || exit 1 &&
@@ -88,8 +88,8 @@ services:
     container_name: blog_celery-worker
     restart: always
     user: "root"
-    volumes:
-      - /opt/blog:/app
+#    volumes:
+#      - /opt/blog:/app
     working_dir: /app
     command: >
       bash -c "mkdir -p logs &&
