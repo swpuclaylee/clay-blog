@@ -14,6 +14,8 @@ deploy:
     - |
       cat > .env <<EOF
       PROJECT_NAME=blog
+      PROJECT_DESCRIPTION=blog
+      VERSION=0.1.0
       DEBUG=false
       ALLOWED_ORIGINS=["*"]
       API_PREFIX=/api/v1
