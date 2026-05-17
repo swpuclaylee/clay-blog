@@ -8,7 +8,6 @@ deploy:
   only:
     - main
   script:
-    # 生成 .env 文件
     - |
       cat > .env <<EOF
       PROJECT_NAME=blog
@@ -50,6 +49,5 @@ deploy:
       BDY_API_KEY=$BDY_API_KEY
       BDY_SECRET_KEY=$BDY_SECRET_KEY
       EOF
-    # 构建并启动
     - docker compose down
     - docker compose up -d --build
