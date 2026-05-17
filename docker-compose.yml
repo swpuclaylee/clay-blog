@@ -9,6 +9,8 @@ services:
       dockerfile: Dockerfile
     container_name: blog_backend
     restart: always
+    env_file:
+      - /opt/blog-data/.env
     user: "root"
     ports:
       - "20030:8000"
@@ -87,6 +89,8 @@ services:
     image: blog-backend:latest
     container_name: blog_celery-worker
     restart: always
+    env_file:
+      - /opt/blog-data/.env
     user: "root"
 #    volumes:
 #      - /opt/blog:/app
